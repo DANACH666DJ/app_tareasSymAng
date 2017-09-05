@@ -7,3 +7,11 @@ default_pruebas:
     path: /pruebas
     defaults: { _controller: "AppBundle:Default:pruebas" }
     methods: GET
+
+default_login:
+    path: /login
+    defaults: { _controller: "AppBundle:Default:login" }
+    methods: POST
+
+
+
