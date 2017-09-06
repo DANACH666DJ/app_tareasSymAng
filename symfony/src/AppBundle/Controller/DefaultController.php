@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints as Assert;
 use AppBundle\Services\Helpers;
+use AppBundle\Services\JwtAuth;
 
 class DefaultController extends Controller
 {
@@ -37,6 +38,7 @@ class DefaultController extends Controller
            //si existe el email le das el valor de params->email si no, se pone a null
            $email = (isset($params->email)) ? $params->email :null;
            $password = (isset($params->password)) ? $params->password :null;
+           $getHash = (isset($params->getHash)) ? $params->getHash :null;
 
            //Validate email
            $emailConstraint = new Assert\Email();
@@ -46,10 +48,17 @@ class DefaultController extends Controller
 
            //si es igual a 0 el email se valida correctamente
            if($email != null && count($validate_email) == 0 && $password !=null){
-            $data = array(
-                'status' => 'ok',
-                'data' => 'Login correct'
-             );
+               
+               $jwt_auth =$this->get(JwtAuth::class);
+
+               if($getHash == null || $getHash == false){
+                   $signUp = $jwt_auth->signUp($email,$password);
+               }else{
+                   $signUp = $jwt_auth->signUp($email,$password, true);
+               }
+
+               return $this->json($signUp);
+
             }else{
                 $data = array(
                     'status' => 'error',
@@ -59,7 +68,6 @@ class DefaultController extends Controller
         }
 
        return $helpers->json($data);
-
 
     }
 
