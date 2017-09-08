@@ -31,6 +31,12 @@ class DefaultController extends Controller
        $json = $request->get('json',null);
 
 
+       $data = array(
+           'status' => 'error',
+           'data' => 'Not data'
+        );
+
+
        if($json !=null){
            //Convertimos un json a un objeto php
            $params = json_decode($json);
@@ -72,21 +78,30 @@ class DefaultController extends Controller
     }
 
 
-    public function pruebasAction(){
-        $em = $this->getDoctrine()->getManager();
-        $userRepo = $em->getRepository('BackendBundle:User');
-        $users = $userRepo->findAll();
+    public function pruebasAction(Request $request){
+        $token = $request->get('authorization',null);
+        $helpers = $this->get(Helpers::class);
+        $jwt_auth =$this->get(JwtAuth::class);
 
-        $helpers = $this->get(Helpers::class); 
-        return $helpers->json($users);
-        /*
-        die();
-        
-        return $this->json(array(
-            'status' => 'succes',
-            'users' => $users[0]->getName()
-        ));
-        */
+        //si nos llega el token y checkToken devuelve true
+        if($token && $jwt_auth ->checkToken($token)){
+            $em = $this->getDoctrine()->getManager();
+            $userRepo = $em->getRepository('BackendBundle:User');
+            $users = $userRepo->findAll();
+    
+            return $helpers->json(array(
+                'status' => 'succes',
+                'users' => $users
+            ));
+        }else{
+            return $helpers->json(array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Authorization not valid'
+            ));
+
+        }
+
         
     }
 }

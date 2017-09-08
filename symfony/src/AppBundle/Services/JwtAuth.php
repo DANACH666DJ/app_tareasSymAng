@@ -64,4 +64,33 @@ class JwtAuth{
         
         return $data;
     }
+
+
+    public function checkToken($jwt,$getIdentity = false){
+        $auth = false;
+        
+        try{
+            //Comprobamos si es el mismo token con la key
+            $decoded = JWT::decode($jwt,$this->key,array('HS256'));
+        }catch(\UnexpectedValueException $e){
+            $auth = false;
+        }catch(\DomainException $e){
+            $auth = false;
+        }
+
+        //si decoded es un objeto correcto  user y existe el ide del user
+        if(isset($decoded) && is_object($decoded) && isset($decoded->sub)){
+            $auth = true;
+        }else{
+            $auth = false;
+        }
+
+        if($getIdentity == false){
+            return $auth;
+        }else{
+            return $decoded;
+        }
+
+
+    }
 }
