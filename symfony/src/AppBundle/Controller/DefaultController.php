@@ -52,15 +52,17 @@ class DefaultController extends Controller
            $emailConstraint->message = "This email is not valid !!";
            $validate_email = $this->get("validator")->validate($email,$emailConstraint);
 
+
            //si es igual a 0 el email se valida correctamente
            if($email != null && count($validate_email) == 0 && $password !=null){
-               
+               //encode password
+               $pwd = hash('sha256',$password);
                $jwt_auth =$this->get(JwtAuth::class);
 
                if($getHash == null || $getHash == false){
-                   $signUp = $jwt_auth->signUp($email,$password);
+                   $signUp = $jwt_auth->signUp($email,$pwd);
                }else{
-                   $signUp = $jwt_auth->signUp($email,$password, true);
+                   $signUp = $jwt_auth->signUp($email,$pwd, true);
                }
 
                return $this->json($signUp);

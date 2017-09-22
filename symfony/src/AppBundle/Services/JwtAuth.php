@@ -66,6 +66,7 @@ class JwtAuth{
     }
 
 
+    //para comprobar si el token es correcto y para decodificarlo
     public function checkToken($jwt,$getIdentity = false){
         $auth = false;
         

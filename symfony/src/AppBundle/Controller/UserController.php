@@ -51,6 +51,11 @@ class UserController extends Controller {
                $user->setEmail($email);
                $user->setName($name);
                $user->setSurname($surname);
+
+               //cifrar la password
+               $pwd = hash('sha256',$password);
+               $user->setPassword($pwd);
+
                //necesario para guardar en bbdd o hacer selects
                $em = $this->getDoctrine()->getManager();
                //para comprobar si existe un user con el mismo email
@@ -141,12 +146,21 @@ class UserController extends Controller {
                 $validate_email = $this->get("validator")->validate($email,$emailConstraint);
         
                 //si es igual a 0 el email se valida correctamente
-                if($email != null && count($validate_email) == 0 && $password !=null && $name !=null && $surname !=null){
+                if($email != null && count($validate_email) == 0 && $name !=null && $surname !=null){
                     //$user->setCreatedAt($createdAt);
                     $user->setRole($role);
                     $user->setEmail($email);
                     $user->setName($name);
                     $user->setSurname($surname);
+
+                    //if password is not null,save password encoding
+                    if($password !=null){
+                        //encode password
+                        $pwd = hash('sha256',$password);
+                        $user->setPassword($pwd);
+                    }
+                   
+
                     //necesario para guardar en bbdd o hacer selects
                     $em = $this->getDoctrine()->getManager();
                     //para comprobar si existe un user con el mismo email
