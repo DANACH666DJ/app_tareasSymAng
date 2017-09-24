@@ -29,6 +29,9 @@ class JwtAuth{
             $this->signUp = true;
         }
 
+        //echo var_dump($this->signUp);
+        
+
         //si es true, el user coincide
         if($this->signUp){
             //Generar tokens
@@ -61,7 +64,6 @@ class JwtAuth{
             );
         }
 
-        
         return $data;
     }
 

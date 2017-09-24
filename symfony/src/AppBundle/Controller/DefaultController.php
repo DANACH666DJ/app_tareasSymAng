@@ -57,6 +57,8 @@ class DefaultController extends Controller
            if($email != null && count($validate_email) == 0 && $password !=null){
                //encode password
                $pwd = hash('sha256',$password);
+               //echo var_dump($pwd);
+
                $jwt_auth =$this->get(JwtAuth::class);
 
                if($getHash == null || $getHash == false){
